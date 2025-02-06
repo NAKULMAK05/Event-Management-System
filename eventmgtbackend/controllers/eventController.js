@@ -1,5 +1,5 @@
 import Event from "../models/Event.js";
-
+ 
 // Create Event
 // Create Event
 const createEvent = async (req, res) => {
