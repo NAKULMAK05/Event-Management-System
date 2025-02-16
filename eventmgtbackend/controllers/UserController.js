@@ -70,8 +70,6 @@ const updateUserDetails = async (req, res) => {
 };
 
 // 🔹 Update Profile Photo (Using Multer)
-// Update Profile Photo (Using Multer)
-// Update Profile Photo (Using Multer)
 const updateProfilePhoto = async (req, res) => {
   try {
     const userId = req.user?._id;
@@ -102,7 +100,7 @@ const updateProfilePhoto = async (req, res) => {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        photo: `${req.protocol}://${req.get("host")}/uploads/${user.photo}`, // Send full URL
+        photo: `${req.protocol}://${req.get("host")}/uploads/${user.photo}`, // Dynamic URL
       },
     });
   } catch (error) {
@@ -110,7 +108,6 @@ const updateProfilePhoto = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
 
 // 🔹 Serve Uploaded Profile Photos
 const serveProfilePhoto = (req, res) => {
@@ -124,6 +121,31 @@ const serveProfilePhoto = (req, res) => {
   }
 };
 
+// 🔹 Fetch User Suggestions (Full Name & Profile Photo)
+const fetchUserSuggestions = async (req, res) => {
+  try {
+    const users = await User.find(
+      { _id: { $ne: req.user.id }, type: { $ne: "organizer" } }, // ✅ Exclude organizers & current user
+      "firstName lastName email photo" // Select only required fields
+    );
+
+    res.json(users);
+  } catch (err) {
+    console.error("❌ Error fetching suggestions:", err.message);
+    res.status(500).json({ msg: "Server error", error: err.message });
+  }
+};
 
 
-export { getUserDetails, updateUserDetails, updateProfilePhoto, serveProfilePhoto, upload };
+
+
+
+
+export {
+  getUserDetails,
+  updateUserDetails,
+  updateProfilePhoto,
+  serveProfilePhoto,
+  upload,
+  fetchUserSuggestions,
+};
