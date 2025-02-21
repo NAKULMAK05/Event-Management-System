@@ -12,6 +12,7 @@ const registerUser = async (req, res) => {
     lastName: Joi.string().required().label('Last Name'),
     email: Joi.string().email().required().label('Email'),
     password: Joi.string().required().label('Password'),
+    confirmPassword: Joi.string().required().label('confirmPassword'),
     type: Joi.string().valid('student', 'organizer').required().label('User Type'),
   }).validate(req.body);
   
@@ -31,7 +32,7 @@ const registerUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     // Create new user
-    user = new User({ firstName, lastName, email, password: hashedPassword, type });
+    user = new User({ firstName, lastName, email, password: hashedPassword , confirmPassword : hashedPassword, type });
     await user.save();
 
     // Generate JWT token
