@@ -19,6 +19,10 @@ export default function SignupPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
   const API_BASE_URL = "https://event-management-system-e2ip.vercel.app";
+  
+  console.log("Signup response: ", res);
+  console.log("API_BASE_URL:", API_BASE_URL);
+  
   const handleChange = ({ currentTarget: input }) => {
     setData({ ...data, [input.name]: input.value });
   };
@@ -33,9 +37,10 @@ export default function SignupPage() {
       const { data: res } = await axios.post(url, data);
 
       console.log("Signup response: ", res);
-    console.log("API_BASE_URL:", API_BASE_URL);
-    const url = `${API_BASE_URL}/api/auth/register`;
-    console.log("Constructed URL:", url);
+      console.log("API_BASE_URL:", API_BASE_URL);
+      const url = `${API_BASE_URL}/api/auth/register`;
+      console.log("Constructed URL:", url);
+      console.log("Constructed URL:", url);
   
       if (res.token) {
         localStorage.setItem("token", res.token);
