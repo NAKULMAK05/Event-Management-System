@@ -47,7 +47,7 @@ const StudentDashboard = () => {
     if (loading) return;
     setLoading(true);
     try {
-      const res = await axios.get(`http://localhost:8000/api/event/getevent?page=${page}`, {
+      const res = await axios.get( `${API_BASE_URL}/api/event/getevent?page=${page}`, {
         headers: { "x-auth-token": localStorage.getItem("token") },
       });
       if (res.data.length === 0) {
@@ -67,7 +67,7 @@ const StudentDashboard = () => {
   // Fetch Suggestions
   const fetchSuggestions = async () => {
   try {
-    const res = await axios.get("http://localhost:8000/api/user/suggestions", { // Use relative path for Vercel
+    const res = await axios.get( `${API_BASE_URL}/api/user/suggestions`, { // Use relative path for Vercel
       headers: { "x-auth-token": localStorage.getItem("token") },
     });
     const currentUserId = localStorage.getItem("userId");
@@ -119,7 +119,7 @@ const StudentDashboard = () => {
     );
     try {
       await axios.post(
-        `http://localhost:8000/api/stat/like/${eventId}`,
+         `${API_BASE_URL}/api/stat/like/${eventId}`,
         { userId },
         { headers: { "x-auth-token": token } }
       );
@@ -152,7 +152,7 @@ const StudentDashboard = () => {
     setCommentInputs((prev) => ({ ...prev, [eventId]: "" }));
     try {
       await axios.post(
-        `http://localhost:8000/api/stat/comment/${eventId}`,
+        `${API_BASE_URL}/api/stat/comment/${eventId}`,
         { userId, text, photo: photoUrl },
         { headers: { "x-auth-token": token } }
       );
@@ -189,7 +189,7 @@ const StudentDashboard = () => {
     const token = localStorage.getItem("token");
     if (!userId || !token) return;
     try {
-      const res = await axios.get("http://localhost:8000/api/user/details", {
+      const res = await axios.get( `${API_BASE_URL}/api/user/details`, {
         headers: { "x-auth-token": token },
       });
       setUserProfile(res.data);
@@ -214,7 +214,7 @@ const StudentDashboard = () => {
     if (!token) return;
     try {
       const res = await axios.put(
-        "http://localhost:8000/api/user/details",
+        `${API_BASE_URL}/api/user/details`,
         {
           firstName: userProfile.firstName,
           lastName: userProfile.lastName,
@@ -238,7 +238,7 @@ const StudentDashboard = () => {
     if (!token) return;
     try {
       const res = await axios.put(
-        "http://localhost:8000/api/user/update-photo",
+        `${API_BASE_URL}/api/user/update-photo`,
         formData,
         {
           headers: {
@@ -260,7 +260,7 @@ const StudentDashboard = () => {
     if (!token) return;
     try {
       await axios.post(
-        `http://localhost:8000/api/user/add-connection/${userId}`,
+        `${API_BASE_URL}/api/user/add-connection/${userId}`,
         {},
         { headers: { "x-auth-token": token } }
       );
