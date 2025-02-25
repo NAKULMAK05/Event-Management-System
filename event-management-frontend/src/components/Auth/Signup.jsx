@@ -18,7 +18,7 @@ export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
-  const API_BASE_URL = "https://event-management-system-e2ip.vercel.app";
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   
   console.log("Signup response: ", res);
   console.log("API_BASE_URL:", API_BASE_URL);
