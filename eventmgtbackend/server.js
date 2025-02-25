@@ -1,6 +1,24 @@
+import dotenv from 'dotenv';
+import fs from 'fs';
+import crypto from 'crypto';
+
+// Initialize dotenv to load environment variables
+dotenv.config();
+
+// Ensure that JWT_SECRET is set
+if (!process.env.JWT_SECRET) {
+  console.error('Error: JWT_SECRET environment variable is not set!');
+  process.exit(1);
+}
+
+console.log('JWT_SECRET is set.');
+
+// Use the environment variable for MongoDB connection, with a fallback for local development
+const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/Event";
+
+// Import other modules after environment setup
 import express from 'express';
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
 import eventRoutes from './routes/eventRoutes.js';
 import statRoutes from './routes/Stat.js';
@@ -8,28 +26,50 @@ import cors from 'cors';
 import path from 'path';
 import userRoutes from './routes/userRoutes.js';
 import { fileURLToPath } from 'url';
+import { User } from './models/User.js'; // Import User model
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-// Initialize dotenv to load environment variables
-dotenv.config();
 
 // Create an Express app
 const app = express();
 const PORT = process.env.PORT || 8000;
 
-// Use middleware
-app.use(cors()); // Enable cross-origin requests
-app.use(express.json()); // Parse incoming JSON requests
+// Connect to the database using MONGO_URI
+mongoose
+  .connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(async () => {
+    console.log("✅ Database connected successfully");
 
-// Connect to the database
-mongoose.connect("mongodb://localhost:27017/Event", { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("✅ Database connected successfully"))
+    // Generate a test JWT token for a sample user
+    try {
+      // Check if a test user exists; if not, create one
+      let testUser = await User.findOne({ email: "test@example.com" });
+      if (!testUser) {
+        testUser = new User({
+          firstName: "Test",
+          lastName: "User",
+          email: "test@example.com",
+          password: "hashedpassword123", // In practice, hash this with bcrypt
+          type: "student",
+        });
+        await testUser.save();
+      }
+
+      const token = testUser.generateAuthToken();
+      console.log('Generated Test JWT Token at Startup:', token);
+    } catch (error) {
+      console.error('Error generating test JWT token at startup:', error);
+    }
+  })
   .catch((err) => {
     console.error("❌ Database connection failed:", err);
-    process.exit(1);  // Exit the process if database connection fails
+    process.exit(1);
   });
+
+// Use middleware
+app.use(cors());
+app.use(express.json());
 
 // Mount routes
 app.use('/api/auth', authRoutes);
@@ -40,7 +80,6 @@ app.use('/api/user', userRoutes);
 // Serve static files from the uploads folder
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Fallback route for serving files from the uploads folder
 app.get('/uploads/:filename', (req, res) => {
   const filePath = path.join(__dirname, 'uploads', req.params.filename);
   res.sendFile(filePath, (err) => {
