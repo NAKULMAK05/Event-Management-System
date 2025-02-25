@@ -19,7 +19,7 @@ const StudentDashboard = () => {
   const [shareUrl, setShareUrl] = useState("");
   const [eventDetailsOpen, setEventDetailsOpen] = useState(false);
   const [selectedEventDetails, setSelectedEventDetails] = useState(null);
-  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL
+  const API_BASE_URL = import.meta.env.REACT_APP_API_BASE_URL
   const openEventDetailsModal = (event) => {
     setSelectedEventDetails(event);
     setEventDetailsOpen(true);
