@@ -37,7 +37,7 @@ const PORT = process.env.PORT || 8000;
 
 // Connect to the database using MONGO_URI
 mongoose
-  .connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect('mongodb+srv://Nakul:Makode@event.mxgq6.mongodb.net/?retryWrites=true&w=majority&appName=Event', { useNewUrlParser: true, useUnifiedTopology: true })
   .then(async () => {
     console.log("✅ Database connected successfully");
 
@@ -68,7 +68,13 @@ mongoose
   });
 
 // Use middleware
-app.use(cors());
+app.use(cors(
+  {
+  origin: ["https://event-management-system-azure-three.vercel.app/"],
+  methods:["POST" ,"GET" ,"PUT" , "DELETE"],
+  credentials : true
+}
+));
 app.use(express.json());
 
 // Mount routes
