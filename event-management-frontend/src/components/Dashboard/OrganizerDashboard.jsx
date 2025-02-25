@@ -28,7 +28,7 @@ const OrganizerDashboard = () => {
   const [commentReply, setCommentReply] = useState({});
   const [filter, setFilter] = useState("all");
   const navigate = useNavigate();
-
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL
   useEffect(() => {
     fetchEvents();
     fetchUserProfile();
