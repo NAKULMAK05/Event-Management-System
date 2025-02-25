@@ -36,7 +36,7 @@ const OrganizerDashboard = () => {
 
   const fetchEvents = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/event/getevent", {
+      const res = await axios.get( `${API_BASE_URL}/api/event/getevent`, {
         headers: { "x-auth-token": localStorage.getItem("token") },
       });
       setEvents(res.data);
@@ -51,7 +51,7 @@ const OrganizerDashboard = () => {
     if (!userId || !token) return;
 
     try {
-      const res = await axios.get("http://localhost:8000/api/user/details", {
+      const res = await axios.get(`${API_BASE_URL}/api/user/details`, {
         headers: { "x-auth-token": token },
       });
       // Expecting response: { firstName, lastName, email, photoUrl }
@@ -63,7 +63,7 @@ const OrganizerDashboard = () => {
 
   const handleEventCreated = async (newEvent) => {
     try {
-      const res = await axios.post("http://localhost:8000/api/event/create", newEvent, {
+      const res = await axios.post( `${API_BASE_URL}/api/event/create`, newEvent, {
         headers: { "x-auth-token": localStorage.getItem("token") },
       });
       setEvents([res.data, ...events]);
@@ -87,7 +87,7 @@ const OrganizerDashboard = () => {
   
       // Update the event
       const res = await axios.put(
-        `http://localhost:8000/api/event/${eventData._id}`,
+       `${API_BASE_URL}/api/event/${eventData._id}`,
         eventData,
         { headers: { "x-auth-token": localStorage.getItem("token") } }
       );
@@ -113,7 +113,7 @@ const OrganizerDashboard = () => {
 
   const confirmDeleteEvent = async () => {
     try {
-      await axios.delete(`http://localhost:8000/api/event/${eventToDelete}`, {
+      await axios.delete(`${API_BASE_URL}/api/event/${eventToDelete}`, {
         headers: { "x-auth-token": localStorage.getItem("token") },
       });
       setEvents(events.filter((event) => event._id !== eventToDelete));
@@ -180,7 +180,7 @@ const OrganizerDashboard = () => {
     if (!token) return;
     try {
       const res = await axios.put(
-        "http://localhost:8000/api/user/update-photo",
+        `${API_BASE_URL}/api/user/update-photo`,
         formData,
         {
           headers: {
@@ -204,7 +204,7 @@ const OrganizerDashboard = () => {
     setSelectedEvent(event);
     try {
       const res = await axios.post(
-        "http://localhost:8000/api/stat/users",
+        `${API_BASE_URL}/api/stat/users`,
         { userIds: event.likes },
         { headers: { "x-auth-token": localStorage.getItem("token") } }
       );
@@ -236,7 +236,7 @@ const OrganizerDashboard = () => {
 
     try {
       const res = await axios.post(
-        `http://localhost:8000/api/stat/comment/${eventId}`,
+        `${API_BASE_URL}/api/stat/comment/${eventId}`,
         { userId: reply.userId, text: replyText, photo: reply.photo, isOrganizerReply: true },
         { headers: { "x-auth-token": token } }
       );
