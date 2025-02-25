@@ -20,7 +20,7 @@ export default function LoginPage() {
     setSuccess("");
 
     try {
-      const url = "http://localhost:8000/api/auth/login";
+      const url = `${API_BASE_URL}/api/auth/login`;
       const { data: res } = await axios.post(url, data);
 
       console.log("Login response: ", res);
