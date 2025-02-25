@@ -30,11 +30,13 @@ export default function SignupPage() {
       return;
     }
     try {
-      const url = `${API_BASE_URL}/api/auth/register`;
       const { data: res } = await axios.post(url, data);
 
       console.log("Signup response: ", res);
-
+    console.log("API_BASE_URL:", API_BASE_URL);
+    const url = `${API_BASE_URL}/api/auth/register`;
+    console.log("Constructed URL:", url);
+  
       if (res.token) {
         localStorage.setItem("token", res.token);
         setSuccess("Account created successfully! Redirecting...");
