@@ -16,10 +16,11 @@ const userSchema = new mongoose.Schema({
 // Generate JWT Token
 userSchema.methods.generateAuthToken = function () {
   try {
+    console.log('JWT_SECRET:', process.env.JWT_SECRET); // Log to check if the secret is loaded
     return jwt.sign(
       { _id: this._id, email: this.email, type: this.type },
       process.env.JWT_SECRET,
-      { expiresIn: "7h" }
+      { expiresIn: "24h" }
     );
   } catch (error) {
     console.error("Error generating JWT:", error);
