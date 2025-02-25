@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./components/Auth/Login";
-import Signup from "./components/Auth/SignUp";
+import Signup from "./components/Auth/Signup";
 import StudentDashboard from "./components/Dashboard/StudentDashboard";
 import OrganizerDashboard from "./components/Dashboard/OrganizerDashboard";
 
