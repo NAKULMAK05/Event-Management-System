@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { Heart, MessageCircle, Share2, X, LogOut, Camera, UserPlus } from "lucide-react";
+import { Heart, MessageCircle, Share2, X, LogOut, Camera, UserPlus ,UserCircle} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import "../App.css";
+import image from './image.png'
 
 const StudentDashboard = () => {
   const [events, setEvents] = useState([]);
@@ -65,18 +66,24 @@ const StudentDashboard = () => {
 
   // Fetch Suggestions
   const fetchSuggestions = async () => {
-    try {
-      const res = await axios.get("http://localhost:8000/api/user/suggestions", {
-        headers: { "x-auth-token": localStorage.getItem("token") },
-      });
-      const currentUserId = localStorage.getItem("userId");
-      const filteredUsers = res.data.filter(user => user._id !== currentUserId);
-      setSuggestions(filteredUsers);
-    } catch (err) {
-      console.error("Error fetching suggestions:", err);
-    }
-  };
-
+  try {
+    const res = await axios.get("http://localhost:8000/api/user/suggestions", { // Use relative path for Vercel
+      headers: { "x-auth-token": localStorage.getItem("token") },
+    });
+    const currentUserId = localStorage.getItem("userId");
+    // Map photo to photoUrl to match frontend expectation
+    const filteredUsers = res.data
+      .filter(user => user._id !== currentUserId)
+      .map(user => ({
+        ...user,
+        photoUrl: user.photo, // Rename photo to photoUrl
+      }));
+    console.log("📌 Fetched suggestions:", filteredUsers); // Debug log
+    setSuggestions(filteredUsers);
+  } catch (err) {
+    console.error("Error fetching suggestions:", err);
+  }
+};
   useEffect(() => {
     fetchEvents();
     fetchSuggestions();
@@ -246,6 +253,7 @@ const StudentDashboard = () => {
     }
   };
 
+
   // Add User to Connections
   const handleAddUser = async (userId) => {
     const token = localStorage.getItem("token");
@@ -409,46 +417,51 @@ const StudentDashboard = () => {
 
       {/* SUGGESTIONS SIDEBAR */}
       <aside className="hidden lg:block fixed top-20 right-0 w-80 h-[calc(100vh-5rem)] bg-white/90 backdrop-blur-md border-l border-white/20 p-6 shadow-lg overflow-y-auto">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">Suggestions</h2>
-        <div className="space-y-4">
-          {suggestions.slice(0, showMoreSuggestions ? suggestions.length : 5).map((user) => (
-            <div
-              key={user._id}
-              className="flex items-center justify-between p-3 bg-white/50 rounded-lg hover:bg-white/70 transition-all duration-200"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-gray-200 overflow-hidden shadow-md">
-                  {user.photoUrl ? (
-                    <img src={user.photoUrl} alt="Profile" className="w-full h-full object-cover" />
-                  ) : (
-                    <span className="flex items-center justify-center h-full text-lg font-bold text-gray-600">
-                      {user.firstName[0]}{user.lastName[0]}
-                    </span>
-                  )}
-                </div>
-                <div>
-                  <p className="text-md font-medium text-gray-700">{user.firstName} {user.lastName}</p>
-                  <p className="text-sm text-gray-500">@{user.username}</p>
-                </div>
-              </div>
-              <button
-                onClick={() => handleAddUser(user._id)}
-                className="text-purple-500 hover:text-purple-700 transition-colors"
-              >
-                <UserPlus size={20} />
-              </button>
-            </div>
-          ))}
-        </div>
-        {suggestions.length > 5 && (
-          <button
-            onClick={() => setShowMoreSuggestions(!showMoreSuggestions)}
-            className="w-full mt-4 text-purple-500 hover:text-purple-700 transition-colors font-medium"
+      <h2 className="text-xl font-semibold text-gray-800 mb-4">Suggestions</h2>
+      <div className="space-y-4">
+        {suggestions.slice(0, showMoreSuggestions ? suggestions.length : 5).map((user) => (
+          <div
+            key={user._id}
+            className="flex items-center justify-between p-3 bg-white/50 rounded-lg hover:bg-white/70 transition-all duration-200"
           >
-            {showMoreSuggestions ? "Show Less" : "See More"}
-          </button>
-        )}
-      </aside>
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-full bg-gray-200 overflow-hidden shadow-md flex items-center justify-center">
+                {user.photoUrl && user.photoUrl.trim() !== "" ? (
+                  <img
+                    src={user.photoUrl}
+                    alt={`Profile photo of ${user.firstName}`}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <UserCircle size={28} className="text-gray-500" />
+                )}
+              </div>
+              <div>
+                <p className="text-md font-medium text-gray-700">
+                  {user.firstName} {user.lastName}
+                </p>
+                <p className="text-sm text-gray-500">@{user.username}</p>
+              </div>
+            </div>
+            <button
+              onClick={() => handleAddUser(user._id)}
+              className="text-purple-500 hover:text-purple-700 transition-colors"
+            >
+              <UserPlus size={20} />
+            </button>
+          </div>
+        ))}
+      </div>
+      {suggestions.length > 5 && (
+        <button
+          onClick={() => setShowMoreSuggestions(!showMoreSuggestions)}
+          className="w-full mt-4 text-purple-500 hover:text-purple-700 transition-colors font-medium"
+        >
+          {showMoreSuggestions ? "Show Less" : "See More"}
+        </button>
+      )}
+    </aside>
+    
 
       {/* EDIT PROFILE MODAL */}
       {isEditProfileOpen && (
