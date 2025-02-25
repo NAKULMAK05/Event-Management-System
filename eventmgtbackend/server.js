@@ -70,7 +70,7 @@ mongoose
 // Use middleware
 app.use(cors(
   {
-  origin: ["https://event-management-system-azure-three.vercel.app/"],
+  origin: ["https://event-management-system-azure-three.vercel.app"],
   methods:["POST" ,"GET" ,"PUT" , "DELETE"],
   credentials : true
 }
