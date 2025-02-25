@@ -30,7 +30,7 @@ export default function SignupPage() {
       return;
     }
     try {
-      const url = 'https://event-management-system-e2ip.vercel.app/api/auth/register';
+      const url = `${API_BASE_URL}/api/auth/register`;
       const { data: res } = await axios.post(url, data);
 
       console.log("Signup response: ", res);
