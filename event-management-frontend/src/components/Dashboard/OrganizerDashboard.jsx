@@ -302,7 +302,7 @@ const OrganizerDashboard = () => {
               </button>
               <button
                 onClick={handleLogout}
-                className="block w-full px-4 py-2 hover:bg-gray-100 text-left transition-all flex items-center gap-2"
+                className=" w-full px-4 py-2 hover:bg-gray-100 text-left transition-all flex items-center gap-2"
               >
                 Logout
               </button>
