@@ -30,7 +30,7 @@ export default function SignupPage() {
       return;
     }
     try {
-      const url = "http://localhost:8000/api/auth/register";
+      const url = `${API_BASE_URL}/api/auth/register`;
       const { data: res } = await axios.post(url, data);
 
       console.log("Signup response: ", res);
