@@ -1,55 +1,60 @@
-import Event from '../models/Event.js'; 
-import mongoose from 'mongoose' // Ensure you have the Event model imported
+import Event from '../models/Event.js';
+import mongoose from 'mongoose';
 
+// Update like count
 export const updateLike = async (req, res) => {
   const { userId } = req.body;
   const eventId = req.params.eventId;
 
-  // Validate that userId and eventId are provided
+  console.log("🔄 Received API Request:", { eventId, userId });
+
   if (!userId || !eventId) {
+    console.log("❌ Missing userId or eventId");
     return res.status(400).json({ success: false, msg: "User ID and Event ID are required" });
   }
 
-  console.log("userId", userId);  // Log userId to check if it is valid
-
   try {
-    // Convert the userId to an ObjectId (MongoDB format)
     const userObjectId = new mongoose.Types.ObjectId(userId);
-
-    // Find the event by eventId
+    
+    // 🔍 Check if event exists
     const event = await Event.findById(eventId);
+    console.log("🔍 Found Event in DB:", event);
     if (!event) {
+      console.log("❌ Event Not Found in DB");
       return res.status(404).json({ success: false, msg: "Event not found" });
     }
 
-    // Check if the user has already liked the event
+    console.log("✅ Before Update Likes:", event.likes);
+
+    // Check if user already liked the event
     const index = event.likes.findIndex(id => id.equals(userObjectId));
 
+    let update;
     if (index === -1) {
-      // User hasn't liked the event yet, so add their like
-      event.likes.push(userObjectId);
+      update = { $push: { likes: userObjectId } };
     } else {
-      // User has already liked the event, so remove their like
-      event.likes.splice(index, 1);
+      update = { $pull: { likes: userObjectId } };
     }
 
-    // Save the event with the updated likes
-    await event.save();
+    console.log("🔄 Updating MongoDB...");
+    const updatedEvent = await Event.updateOne({ _id: eventId }, update);
+    console.log("✅ MongoDB Update Result:", updatedEvent);
 
-    // Return the updated like count in the response
-    return res.status(200).json({ success: true, likes: event.likes.length });
+    // Fetch updated event data from DB
+    const finalEvent = await Event.findById(eventId);
+    console.log("🔄 Final DB Check Likes:", finalEvent.likes);
+
+    return res.status(200).json({ success: true, likes: finalEvent.likes });
 
   } catch (err) {
-    console.error('Error during like update:', err);
+    console.error("❌ Server Error:", err);
     return res.status(500).json({ success: false, msg: "Server error during like update" });
   }
 };
 
-
-
 // Update comment count
 export const updateComment = async (req, res) => {
-  const userId = req.body.userId || req.user?._id;  // Extract from body or JWT
+  const userId = req.body.userId || req.user?._id; // Extract from body or JWT
   const eventId = req.params.eventId;
   const { text } = req.body;
 
@@ -58,18 +63,36 @@ export const updateComment = async (req, res) => {
   }
 
   try {
-    const event = await Event.findById(eventId);
+    // Validate and convert userId to ObjectId
+    let userObjectId;
+    try {
+      userObjectId = new mongoose.Types.ObjectId(userId);
+    } catch (err) {
+      return res.status(400).json({ success: false, msg: "Invalid User ID format" });
+    }
+
+    // Atomically add the comment
+    const event = await Event.findByIdAndUpdate(
+      eventId,
+      {
+        $push: {
+          comments: {
+            userId: userObjectId, // Use correct field name from schema
+            text,
+            date: new Date(), // Explicitly set date (optional, since default exists)
+          },
+        },
+      },
+      { new: true, runValidators: true }
+    );
+
     if (!event) {
       return res.status(404).json({ success: false, msg: "Event not found" });
     }
 
-    event.comments.push({ commentedBy: userId, text });
-    await event.save();
-
-    res.status(200).json({ success: true, msg: "Comment added successfully" });
+    res.status(200).json({ success: true, msg: "Comment added successfully", comments: event.comments });
   } catch (err) {
     console.error("Error during comment update:", err);
     res.status(500).json({ success: false, msg: "Server error" });
   }
 };
-
