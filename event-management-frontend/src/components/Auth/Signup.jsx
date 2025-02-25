@@ -22,7 +22,7 @@ export default function SignupPage() {
   const handleChange = ({ currentTarget: input }) => {
     setData({ ...data, [input.name]: input.value });
   };
-
+  axios.defaults.withCredentials = true;
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (data.password !== data.confirmPassword) {
