@@ -37,7 +37,7 @@ const PORT = process.env.PORT || 8000;
 
 // Connect to the database using MONGO_URI
 mongoose
-  .connect('mongodb+srv://Nakul:Makode@event.mxgq6.mongodb.net/?retryWrites=true&w=majority&appName=Event', { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(async () => {
     console.log("✅ Database connected successfully");
 
