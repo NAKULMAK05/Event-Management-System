@@ -1,7 +1,6 @@
 import { Mail, Key, User, Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import axios from "axios";
 import "./Auth.css";
 
 export default function SignupPage() {
@@ -18,15 +17,14 @@ export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-  
-  console.log("Signup response: ", res);
-  console.log("API_BASE_URL:", API_BASE_URL);
-  const url = `${API_BASE_URL}/api/auth/register`;
+
+  // Hardcoded API URL
+  const url = "https://event-management-system-e2ip.vercel.app/api/auth/register";
+
   const handleChange = ({ currentTarget: input }) => {
     setData({ ...data, [input.name]: input.value });
   };
-  axios.defaults.withCredentials = true;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (data.password !== data.confirmPassword) {
@@ -34,25 +32,30 @@ export default function SignupPage() {
       return;
     }
     try {
-      const { data: res } = await axios.post(url, data);
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // Include credentials if your backend needs cookies
+        credentials: "include",
+        body: JSON.stringify(data),
+      });
 
+      const res = await response.json();
       console.log("Signup response: ", res);
-      console.log("API_BASE_URL:", API_BASE_URL);
       console.log("Constructed URL:", url);
-  
-      if (res.token) {
+
+      if (response.ok && res.token) {
         localStorage.setItem("token", res.token);
         setSuccess("Account created successfully! Redirecting...");
         setTimeout(() => navigate("/"), 2000);
       } else {
-        setError("Signup failed. Please try again.");
+        setError(res.msg || "Signup failed. Please try again.");
       }
     } catch (error) {
-      if (error.response && error.response.status >= 400 && error.response.status <= 500) {
-        setError(error.response.data.msg || "An error occurred during sign-up.");
-      } else {
-        setError("Something went wrong. Please try again later.");
-      }
+      console.error("Error during signup:", error);
+      setError("Something went wrong. Please try again later.");
     }
   };
 
