@@ -22,7 +22,7 @@ export default function SignupPage() {
   
   console.log("Signup response: ", res);
   console.log("API_BASE_URL:", API_BASE_URL);
-  
+  const url = 'https://event-management-system-e2ip.vercel.app/api/auth/register';
   const handleChange = ({ currentTarget: input }) => {
     setData({ ...data, [input.name]: input.value });
   };
@@ -38,8 +38,6 @@ export default function SignupPage() {
 
       console.log("Signup response: ", res);
       console.log("API_BASE_URL:", API_BASE_URL);
-      const url = https://event-management-system-e2ip.vercel.app/api/auth/register';
-      console.log("Constructed URL:", url);
       console.log("Constructed URL:", url);
   
       if (res.token) {
