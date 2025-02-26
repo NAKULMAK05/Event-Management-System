@@ -38,7 +38,7 @@ export default function SignupPage() {
 
       console.log("Signup response: ", res);
       console.log("API_BASE_URL:", API_BASE_URL);
-      const url = `${API_BASE_URL}/api/auth/register`;
+      const url = https://event-management-system-e2ip.vercel.app/api/auth/register';
       console.log("Constructed URL:", url);
       console.log("Constructed URL:", url);
   
