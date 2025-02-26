@@ -18,7 +18,7 @@ export default function SignupPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
 
-  // Hardcoded API URL
+  // Hardcoded API URL (backend)
   const url = "https://event-management-system-e2ip.vercel.app/api/auth/register";
 
   const handleChange = ({ currentTarget: input }) => {
@@ -27,24 +27,29 @@ export default function SignupPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Simple client-side check
     if (data.password !== data.confirmPassword) {
       setError("Passwords do not match.");
       return;
     }
+
     try {
+      // Debug: Log the URL being used
+      console.log("Posting to URL:", url);
+
       const response = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        // Include credentials if your backend needs cookies
+        // Include credentials if your backend uses cookies
         credentials: "include",
         body: JSON.stringify(data),
       });
 
       const res = await response.json();
-      console.log("Signup response: ", res);
-      console.log("Constructed URL:", url);
+      console.log("Signup response:", res);
 
       if (response.ok && res.token) {
         localStorage.setItem("token", res.token);
