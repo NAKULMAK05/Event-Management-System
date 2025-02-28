@@ -1,6 +1,6 @@
 # Event Management System
 
-The Event Management System is a comprehensive solution designed to help users create, manage, and organize events seamlessly. Whether you're hosting a conference, workshop, or social gathering, this system provides a user-friendly interface and a robust backend to manage registrations, ticketing, scheduling, and more.
+The Event Management System is a comprehensive solution designed to help users create, manage, and organize events seamlessly.
 
 ## Table of Contents
 
@@ -12,7 +12,6 @@ The Event Management System is a comprehensive solution designed to help users c
 - [Contributing](#contributing)
 - [License](#license)
 - [Contact](#contact)
-- [Acknowledgements](#acknowledgements)
 
 ## Features
 
@@ -23,8 +22,6 @@ The Event Management System is a comprehensive solution designed to help users c
 - **Administrative Dashboard:** Monitor event statistics and manage user data.
 
 ## Technologies Used
-
-*(Customize this section to reflect your project’s stack)*
 
 - **Frontend:** React and Tailwind
 - **Backend:** Node.js with Express
@@ -101,11 +98,3 @@ For any questions or suggestions, please open an issue or contact the project ma
 
 Project Repository: [Event Management System on GitHub](https://github.com/NAKULMAK05/Event-Management-System)
 
-## Acknowledgements
-
-- Thanks to all contributors and open-source projects that inspired this project.
-- *(Add any additional acknowledgements or references here)*
-
----
-
-Feel free to customize this README to best suit the details and requirements of your project!
