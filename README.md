@@ -43,17 +43,17 @@ Follow these steps to set up the project locally:
    ```
 3. **Install Dependencies**
 
-   - If using **Node.js**:
+   - **Node.js**:
      ```bash
-     npm install
+     npm install i 
      ``
 4. **Setup the Database**
 
-   - Follow the database setup instructions provided in the project documentation. Create your database and configure the connection settings.
+   - connect to MongoDB database locally or for production use MongoDB atlas connection string
 
 5. **Configure Environment Variables**
 
-   - Create a `.env` file based on the provided `.env.example` and add the necessary environment variables.
+   - Create a `.env` file based and add the necessary environment variables.
 
 ## Configuration
 
