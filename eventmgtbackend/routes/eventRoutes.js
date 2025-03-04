@@ -11,11 +11,11 @@ import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// Event CRUD routes
+
 // Create an event
 router.post("/create", authMiddleware, createEvent);
 
-// Get all events (can add pagination or filtering if needed)
+// Get all events 
 router.get("/getevent", getEvents);
 
 // Update an event by its ID
