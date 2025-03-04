@@ -152,9 +152,14 @@ const fetchUserSuggestions = async (req, res) => {
 };
 
 
-
-
-
+const fetchData = async(req, res)=>{
+  try{
+     console.log("get users");
+  }
+  catch(err){
+    console.log(err);
+  }
+}
 
 export {
   getUserDetails,
