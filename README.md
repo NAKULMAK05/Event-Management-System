@@ -76,6 +76,32 @@ Follow these steps to set up the project locally:
 
   Open your web browser and navigate to `http://localhost:3000` (or the appropriate port) to start using the application.
 
+
+ **Outputs**
+
+<br/>
+
+**Create Events** 
+
+<br/>
+
+<img width="959" alt="form_ev" src="https://github.com/user-attachments/assets/86296c67-8cf7-4623-aa6c-b8ac9eb79d77" /><br/>
+
+**Get Statistics and Manage your events from Organizer Dashboard**
+
+<br/>
+
+ <img width="959" alt="OD" src="https://github.com/user-attachments/assets/a8c27ea5-595a-4064-bfc5-2d6171f244ff" /> <br/>
+
+ <br/>
+ 
+ **The other Audience especially Students as it is developed for college level events management can see and interact with events such as like and comment from student dashboard**
+ 
+ <br/>
+ 
+<img width="958" alt="SD" src="https://github.com/user-attachments/assets/63dd431f-ea0f-448b-a2cb-477de295b924" /> <br/>
+
+
 ## Contributing
 
 Contributions are welcome! If you have suggestions for improvements or want to add new features:
