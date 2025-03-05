@@ -8,7 +8,7 @@ The Event Management System is a comprehensive solution designed to help users c
 - [Technologies Used](#technologies-used)
 - [Installation](#installation)
 - [Configuration](#configuration)
-- [Usage](#usage)
+- [Usage](#usage) 
 - [Contributing](#contributing)   
 - [License](#license)
 - [Contact](#contact)
