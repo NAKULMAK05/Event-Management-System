@@ -1,6 +1,6 @@
 # Event Management System
 
-The Event Management System is a comprehensive solution designed to help users create, manage, and organize events seamlessly.
+The Event Management System is a comprehensive solution designed to help users create, manage, and organize events seamlessly. Students can get Event Information Live and can discuss among each other , ensuring a interactive discussion. 
 
 ## Table of Contents
 
