@@ -46,7 +46,7 @@ Follow these steps to set up the project locally:
    - **Node.js**:
      ```bash
      npm install i 
-     ``
+     ```
 4. **Setup the Database**
 
    - connect to MongoDB database locally or for production use MongoDB atlas connection string
@@ -70,6 +70,7 @@ Follow these steps to set up the project locally:
   - For **Node.js**:
     ```bash
     npm start
+    ```
 
 
 - **Accessing the Application**
