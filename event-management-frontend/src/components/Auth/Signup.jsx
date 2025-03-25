@@ -18,9 +18,6 @@ export default function SignupPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
 
-  // Hardcoded API URL (backend)
-  const url = "https://event-management-system-e2ip.vercel.app/api/auth/register";
-
   const handleChange = ({ currentTarget: input }) => {
     setData({ ...data, [input.name]: input.value });
   };
@@ -35,9 +32,7 @@ export default function SignupPage() {
     }
 
     try {
-      // Debug: Log the URL being used
-      console.log("Posting to URL:", url);
-
+      const url = `${API_BASE_URL}/api/auth/signup`;
       const response = await fetch(url, {
         method: "POST",
         headers: {
