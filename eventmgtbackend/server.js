@@ -67,30 +67,25 @@ mongoose
     process.exit(1);
   });
 
-// Use middleware
-
-// Updated CORS configuration
+// Updated CORS configuration with additional allowed origin
 const allowedOrigins = [
-  "https://event-management-system-3x7f.vercel.app", // Current production frontend URL
-  "http://localhost:3000" // Local development URL
+  "http://localhost:3000",                           // Local development URL
+  "https://event-management-system-3x7f.vercel.app"    // New client URL that needs access
 ];
 
 app.use(cors({
   origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests) 
     if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true); // Allow request if origin is in the list
+      callback(null, true);
     } else {
-      callback(new Error("Not allowed by CORS")); // Block request for unlisted origin
+      callback(new Error("Not allowed by CORS"));
     }
   },
-  methods: ["POST", "GET", "PUT", "DELETE", "OPTIONS"],
+  methods: ["POST", "GET", "PUT", "DELETE"],
   credentials: true
 }));
 
-// Handle preflight requests (OPTIONS) manually
-app.options('*', cors());
-
-// Parse JSON requests
 app.use(express.json());
 
 // Mount routes
