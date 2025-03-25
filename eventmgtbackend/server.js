@@ -68,13 +68,25 @@ mongoose
   });
 
 // Use middleware
-app.use(cors(
-  {
-  origin: ["https://event-management-system-azure-three.vercel.app"],
-  methods:["POST" ,"GET" ,"PUT" , "DELETE"],
-  credentials : true
-}
-));
+
+// Updated CORS configuration
+const allowedOrigins = [
+  "https://event-management-system-dn64.vercel.app", // Production frontend URL
+  "http://localhost:3000" // Local development URL
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true); // Allow request if origin is in the list
+    } else {
+      callback(new Error("Not allowed by CORS")); // Block request for unlisted origin
+    }
+  },
+  methods: ["POST", "GET", "PUT", "DELETE"],
+  credentials: true
+}));
+
 app.use(express.json());
 
 // Mount routes
