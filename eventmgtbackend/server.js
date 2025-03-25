@@ -71,7 +71,7 @@ mongoose
 
 // Updated CORS configuration
 const allowedOrigins = [
-  "https://event-management-system-dn64.vercel.app", // Production frontend URL
+  "https://event-management-system-3x7f.vercel.app", // Current production frontend URL
   "http://localhost:3000" // Local development URL
 ];
 
@@ -83,10 +83,14 @@ app.use(cors({
       callback(new Error("Not allowed by CORS")); // Block request for unlisted origin
     }
   },
-  methods: ["POST", "GET", "PUT", "DELETE"],
+  methods: ["POST", "GET", "PUT", "DELETE", "OPTIONS"],
   credentials: true
 }));
 
+// Handle preflight requests (OPTIONS) manually
+app.options('*', cors());
+
+// Parse JSON requests
 app.use(express.json());
 
 // Mount routes
