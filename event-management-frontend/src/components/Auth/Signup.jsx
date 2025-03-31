@@ -40,13 +40,11 @@ export default function SignupPage() {
       });
 
       if (!response.ok) {
-        // Attempt to parse the error response as JSON
         let errorMessage = `API Error: ${response.status}`;
         try {
           const errorData = await response.json();
           errorMessage += ` - ${errorData.message || JSON.stringify(errorData)}`;
         } catch (jsonError) {
-          // If response is not JSON, fallback to text
           const errorText = await response.text();
           errorMessage += ` - ${errorText}`;
         }
