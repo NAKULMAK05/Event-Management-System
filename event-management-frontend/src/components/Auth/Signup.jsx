@@ -1,6 +1,7 @@
 import { Mail, Key, User, Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import axios from "axios";
 import "./Auth.css";
 
 export default function SignupPage() {
@@ -29,41 +30,24 @@ export default function SignupPage() {
       return;
     }
     try {
-      const url = `${API_BASE_URL}/api/auth/signup`;
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(data),
-      });
+      const url = "http://localhost:8000/api/auth/register";
+      const { data: res } = await axios.post(url, data);
 
-      if (!response.ok) {
-        let errorMessage = `API Error: ${response.status}`;
-        try {
-          const errorData = await response.json();
-          errorMessage += ` - ${errorData.message || JSON.stringify(errorData)}`;
-        } catch (jsonError) {
-          const errorText = await response.text();
-          errorMessage += ` - ${errorText}`;
-        }
-        throw new Error(errorMessage);
-      }
-
-      const res = await response.json();
-      console.log("Signup response:", res);
+      console.log("Signup response: ", res);
 
       if (res.token) {
         localStorage.setItem("token", res.token);
         setSuccess("Account created successfully! Redirecting...");
         setTimeout(() => navigate("/"), 2000);
       } else {
-        setError(res.msg || "Signup failed. Please try again.");
+        setError("Signup failed. Please try again.");
       }
     } catch (error) {
-      console.error("Error during signup:", error);
-      setError(error.message || "Something went wrong. Please try again later.");
+      if (error.response && error.response.status >= 400 && error.response.status <= 500) {
+        setError(error.response.data.msg || "An error occurred during sign-up.");
+      } else {
+        setError("Something went wrong. Please try again later.");
+      }
     }
   };
 
