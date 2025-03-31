@@ -1,7 +1,6 @@
 import { Mail, Key, User, Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import axios from "axios";
 import "./Auth.css";
 
 export default function SignupPage() {
@@ -18,7 +17,7 @@ export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
-
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
   const handleChange = ({ currentTarget: input }) => {
     setData({ ...data, [input.name]: input.value });
   };
@@ -30,24 +29,41 @@ export default function SignupPage() {
       return;
     }
     try {
-      const url = "http://localhost:8000/api/auth/register";
-      const { data: res } = await axios.post(url, data);
+      const url = `${API_BASE_URL}/api/auth/signup`;
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(data),
+      });
 
-      console.log("Signup response: ", res);
+      if (!response.ok) {
+        let errorMessage = `API Error: ${response.status}`;
+        try {
+          const errorData = await response.json();
+          errorMessage += ` - ${errorData.message || JSON.stringify(errorData)}`;
+        } catch (jsonError) {
+          const errorText = await response.text();
+          errorMessage += ` - ${errorText}`;
+        }
+        throw new Error(errorMessage);
+      }
+
+      const res = await response.json();
+      console.log("Signup response:", res);
 
       if (res.token) {
         localStorage.setItem("token", res.token);
         setSuccess("Account created successfully! Redirecting...");
         setTimeout(() => navigate("/"), 2000);
       } else {
-        setError("Signup failed. Please try again.");
+        setError(res.msg || "Signup failed. Please try again.");
       }
     } catch (error) {
-      if (error.response && error.response.status >= 400 && error.response.status <= 500) {
-        setError(error.response.data.msg || "An error occurred during sign-up.");
-      } else {
-        setError("Something went wrong. Please try again later.");
-      }
+      console.error("Error during signup:", error);
+      setError(error.message || "Something went wrong. Please try again later.");
     }
   };
 
