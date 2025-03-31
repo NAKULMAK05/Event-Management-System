@@ -1,6 +1,7 @@
 import { Mail, Key, User, Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import axios from "axios";
 import "./Auth.css";
 
 export default function SignupPage() {
@@ -17,21 +18,18 @@ export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+
   const handleChange = ({ currentTarget: input }) => {
     setData({ ...data, [input.name]: input.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Simple client-side check
     if (data.password !== data.confirmPassword) {
       setError("Passwords do not match.");
       return;
     }
-
-   try {
+    try {
   const url = `${API_BASE_URL}/api/auth/signup`;
   const response = await fetch(url, {
     method: "POST",
@@ -70,6 +68,7 @@ export default function SignupPage() {
   console.error("Error during signup:", error);
   setError(error.message || "Something went wrong. Please try again later.");
 }
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-700 via-blue-600 to-indigo-900 overflow-hidden">
@@ -231,7 +230,7 @@ export default function SignupPage() {
             <div className="text-center text-sm mt-4 text-gray-200">
               Already have an account?{" "}
               <Link
-                to="/"
+                to="/login"
                 className="hover:text-purple-400 transition-colors duration-200 font-medium"
               >
                 Login
