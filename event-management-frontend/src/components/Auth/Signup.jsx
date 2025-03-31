@@ -31,7 +31,7 @@ export default function SignupPage() {
       return;
     }
 
-    try {
+   try {
   const url = `${API_BASE_URL}/api/auth/signup`;
   const response = await fetch(url, {
     method: "POST",
@@ -43,9 +43,17 @@ export default function SignupPage() {
   });
 
   if (!response.ok) {
-    // Handle non-200 responses here
-    const errorText = await response.text();
-    throw new Error(`API Error: ${response.status} - ${errorText}`);
+    // Attempt to parse the error response as JSON
+    let errorMessage = `API Error: ${response.status}`;
+    try {
+      const errorData = await response.json();
+      errorMessage += ` - ${errorData.message || JSON.stringify(errorData)}`;
+    } catch (jsonError) {
+      // If response is not JSON, fallback to text
+      const errorText = await response.text();
+      errorMessage += ` - ${errorText}`;
+    }
+    throw new Error(errorMessage);
   }
 
   const res = await response.json();
@@ -60,8 +68,9 @@ export default function SignupPage() {
   }
 } catch (error) {
   console.error("Error during signup:", error);
-  setError("Something went wrong. Please try again later.");
+  setError(error.message || "Something went wrong. Please try again later.");
 }
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-700 via-blue-600 to-indigo-900 overflow-hidden">
       {/* Background Animation */}
