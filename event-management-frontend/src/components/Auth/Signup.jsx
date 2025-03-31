@@ -1,7 +1,6 @@
 import { Mail, Key, User, Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import axios from "axios";
 import "./Auth.css";
 
 export default function SignupPage() {
@@ -16,7 +15,7 @@ export default function SignupPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = false;
   const navigate = useNavigate();
 
   const handleChange = ({ currentTarget: input }) => {
@@ -30,44 +29,44 @@ export default function SignupPage() {
       return;
     }
     try {
-  const url = `${API_BASE_URL}/api/auth/signup`;
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    credentials: "include",
-    body: JSON.stringify(data),
-  });
+      const url = `${API_BASE_URL}/api/auth/signup`;
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(data),
+      });
 
-  if (!response.ok) {
-    // Attempt to parse the error response as JSON
-    let errorMessage = `API Error: ${response.status}`;
-    try {
-      const errorData = await response.json();
-      errorMessage += ` - ${errorData.message || JSON.stringify(errorData)}`;
-    } catch (jsonError) {
-      // If response is not JSON, fallback to text
-      const errorText = await response.text();
-      errorMessage += ` - ${errorText}`;
+      if (!response.ok) {
+        // Attempt to parse the error response as JSON
+        let errorMessage = `API Error: ${response.status}`;
+        try {
+          const errorData = await response.json();
+          errorMessage += ` - ${errorData.message || JSON.stringify(errorData)}`;
+        } catch (jsonError) {
+          // If response is not JSON, fallback to text
+          const errorText = await response.text();
+          errorMessage += ` - ${errorText}`;
+        }
+        throw new Error(errorMessage);
+      }
+
+      const res = await response.json();
+      console.log("Signup response:", res);
+
+      if (res.token) {
+        localStorage.setItem("token", res.token);
+        setSuccess("Account created successfully! Redirecting...");
+        setTimeout(() => navigate("/"), 2000);
+      } else {
+        setError(res.msg || "Signup failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error during signup:", error);
+      setError(error.message || "Something went wrong. Please try again later.");
     }
-    throw new Error(errorMessage);
-  }
-
-  const res = await response.json();
-  console.log("Signup response:", res);
-
-  if (res.token) {
-    localStorage.setItem("token", res.token);
-    setSuccess("Account created successfully! Redirecting...");
-    setTimeout(() => navigate("/"), 2000);
-  } else {
-    setError(res.msg || "Signup failed. Please try again.");
-  }
-} catch (error) {
-  console.error("Error during signup:", error);
-  setError(error.message || "Something went wrong. Please try again later.");
-}
   };
 
   return (
