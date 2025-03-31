@@ -23,49 +23,52 @@ export default function SignupPage() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (data.password !== data.confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
-    try {
-      const url = `${API_BASE_URL}/api/auth/signup`;
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(data),
-      });
+  e.preventDefault();
+  if (data.password !== data.confirmPassword) {
+    setError("Passwords do not match.");
+    return;
+  }
+  try {
+    const url = `${API_BASE_URL}/api/auth/signup`;
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
 
-      if (!response.ok) {
-        let errorMessage = `API Error: ${response.status}`;
-        try {
-          const errorData = await response.json();
-          errorMessage += ` - ${errorData.message || JSON.stringify(errorData)}`;
-        } catch (jsonError) {
-          const errorText = await response.text();
-          errorMessage += ` - ${errorText}`;
-        }
-        throw new Error(errorMessage);
-      }
-
-      const res = await response.json();
-      console.log("Signup response:", res);
-
-      if (res.token) {
-        localStorage.setItem("token", res.token);
-        setSuccess("Account created successfully! Redirecting...");
-        setTimeout(() => navigate("/"), 2000);
+    if (!response.ok) {
+      let errorMessage = `API Error: ${response.status}`;
+      // Check content type to see if it's JSON
+      const contentType = response.headers.get("Content-Type");
+      if (contentType && contentType.includes("application/json")) {
+        const errorData = await response.json();
+        errorMessage += ` - ${errorData.message || JSON.stringify(errorData)}`;
       } else {
-        setError(res.msg || "Signup failed. Please try again.");
+        const errorText = await response.text();
+        errorMessage += ` - ${errorText}`;
       }
-    } catch (error) {
-      console.error("Error during signup:", error);
-      setError(error.message || "Something went wrong. Please try again later.");
+      throw new Error(errorMessage);
     }
-  };
+
+    const res = await response.json();
+    console.log("Signup response:", res);
+
+    if (res.token) {
+      localStorage.setItem("token", res.token);
+      setSuccess("Account created successfully! Redirecting...");
+      setTimeout(() => navigate("/"), 2000);
+    } else {
+      setError(res.msg || "Signup failed. Please try again.");
+    }
+  } catch (error) {
+    console.error("Error during signup:", error);
+    setError(error.message || "Something went wrong. Please try again later.");
+  }
+};
+
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-700 via-blue-600 to-indigo-900 overflow-hidden">
