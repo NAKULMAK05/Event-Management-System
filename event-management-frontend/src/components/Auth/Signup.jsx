@@ -32,33 +32,36 @@ export default function SignupPage() {
     }
 
     try {
-      const url = `${API_BASE_URL}/api/auth/signup`;
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        // Include credentials if your backend uses cookies
-        credentials: "include",
-        body: JSON.stringify(data),
-      });
+  const url = `${API_BASE_URL}/api/auth/signup`;
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
 
-      const res = await response.json();
-      console.log("Signup response:", res);
+  if (!response.ok) {
+    // Handle non-200 responses here
+    const errorText = await response.text();
+    throw new Error(`API Error: ${response.status} - ${errorText}`);
+  }
 
-      if (response.ok && res.token) {
-        localStorage.setItem("token", res.token);
-        setSuccess("Account created successfully! Redirecting...");
-        setTimeout(() => navigate("/"), 2000);
-      } else {
-        setError(res.msg || "Signup failed. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error during signup:", error);
-      setError("Something went wrong. Please try again later.");
-    }
-  };
+  const res = await response.json();
+  console.log("Signup response:", res);
 
+  if (res.token) {
+    localStorage.setItem("token", res.token);
+    setSuccess("Account created successfully! Redirecting...");
+    setTimeout(() => navigate("/"), 2000);
+  } else {
+    setError(res.msg || "Signup failed. Please try again.");
+  }
+} catch (error) {
+  console.error("Error during signup:", error);
+  setError("Something went wrong. Please try again later.");
+}
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-700 via-blue-600 to-indigo-900 overflow-hidden">
       {/* Background Animation */}
