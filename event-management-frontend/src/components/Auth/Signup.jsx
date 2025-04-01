@@ -19,7 +19,7 @@ export default function SignupPage() {
   const navigate = useNavigate();
 
   // Replace the URL below with your actual Render backend URL
-  const API_BASE_URL = "https://your-backend-app.onrender.com";
+  const API_BASE_URL = "https://event-management-backend-h0s1.onrender.com";
 
   const handleChange = ({ currentTarget: input }) => {
     setData({ ...data, [input.name]: input.value });
