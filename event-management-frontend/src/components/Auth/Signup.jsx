@@ -17,75 +17,76 @@ export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+
+  // Replace the URL below with your actual Render backend URL
+  const API_BASE_URL = "https://your-backend-app.onrender.com";
+
   const handleChange = ({ currentTarget: input }) => {
     setData({ ...data, [input.name]: input.value });
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  // Validate input fields
-  if (!data.password || !data.confirmPassword || !data.email) {
-    setError("All fields are required.");
-    return;
-  }
-
-  if (data.password !== data.confirmPassword) {
-    setError("Passwords do not match.");
-    return;
-  }
-
-  try {
-    const url = `${import.meta.env.VITE_API_BASE_URL}/api/auth/signup`;
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include", // Use if your backend requires cookies
-      body: JSON.stringify(data),
-    });
-
-    // Handle response
-    if (!response.ok) {
-      const errorMessage = await parseError(response);
-      throw new Error(errorMessage);
+    // Validate input fields
+    if (!data.password || !data.confirmPassword || !data.email) {
+      setError("All fields are required.");
+      return;
     }
 
-    const res = await response.json();
-    console.log("Signup response:", res);
+    if (data.password !== data.confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
 
-    if (res.token) {
-      localStorage.setItem("token", res.token);
-      setSuccess("Account created successfully! Redirecting...");
-      setTimeout(() => navigate("/"), 2000); // Replace with your redirect path
+    try {
+      const url = `${API_BASE_URL}/api/auth/signup`;
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // Use if your backend requires cookies
+        body: JSON.stringify(data),
+      });
+
+      // Handle response
+      if (!response.ok) {
+        const errorMessage = await parseError(response);
+        throw new Error(errorMessage);
+      }
+
+      const res = await response.json();
+      console.log("Signup response:", res);
+
+      if (res.token) {
+        localStorage.setItem("token", res.token);
+        setSuccess("Account created successfully! Redirecting...");
+        setTimeout(() => navigate("/"), 2000); // Replace with your redirect path
+      } else {
+        setError(res.msg || "Signup failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error during signup:", error);
+      setError(error.message || "Something went wrong. Please try again later.");
+    }
+  };
+
+  // Helper function to parse error responses
+  const parseError = async (response) => {
+    const contentType = response.headers.get("Content-Type");
+    let errorMessage = `API Error: ${response.status}`;
+
+    if (contentType && contentType.includes("application/json")) {
+      const errorData = await response.json();
+      errorMessage += ` - ${errorData.message || JSON.stringify(errorData)}`;
     } else {
-      setError(res.msg || "Signup failed. Please try again.");
+      const errorText = await response.text();
+      errorMessage += ` - ${errorText}`;
     }
-  } catch (error) {
-    console.error("Error during signup:", error);
-    setError(error.message || "Something went wrong. Please try again later.");
-  }
-};
 
-// Helper function to parse error responses
-const parseError = async (response) => {
-  const contentType = response.headers.get("Content-Type");
-  let errorMessage = `API Error: ${response.status}`;
-
-  if (contentType && contentType.includes("application/json")) {
-    const errorData = await response.json();
-    errorMessage += ` - ${errorData.message || JSON.stringify(errorData)}`;
-  } else {
-    const errorText = await response.text();
-    errorMessage += ` - ${errorText}`;
-  }
-
-  return errorMessage;
-}
-};
-
+    return errorMessage;
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-700 via-blue-600 to-indigo-900 overflow-hidden">
