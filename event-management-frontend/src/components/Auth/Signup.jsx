@@ -24,32 +24,32 @@ export default function SignupPage() {
 
   const handleSubmit = async (e) => {
   e.preventDefault();
+
+  // Validate input fields
+  if (!data.password || !data.confirmPassword || !data.email) {
+    setError("All fields are required.");
+    return;
+  }
+
   if (data.password !== data.confirmPassword) {
     setError("Passwords do not match.");
     return;
   }
+
   try {
-    const url = `${API_BASE_URL}/api/auth/signup`;
+    const url = `${import.meta.env.VITE_API_BASE_URL}/api/auth/signup`;
     const response = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include",
+      credentials: "include", // Use if your backend requires cookies
       body: JSON.stringify(data),
     });
 
+    // Handle response
     if (!response.ok) {
-      let errorMessage = `API Error: ${response.status}`;
-      // Check content type to see if it's JSON
-      const contentType = response.headers.get("Content-Type");
-      if (contentType && contentType.includes("application/json")) {
-        const errorData = await response.json();
-        errorMessage += ` - ${errorData.message || JSON.stringify(errorData)}`;
-      } else {
-        const errorText = await response.text();
-        errorMessage += ` - ${errorText}`;
-      }
+      const errorMessage = await parseError(response);
       throw new Error(errorMessage);
     }
 
@@ -59,7 +59,7 @@ export default function SignupPage() {
     if (res.token) {
       localStorage.setItem("token", res.token);
       setSuccess("Account created successfully! Redirecting...");
-      setTimeout(() => navigate("/"), 2000);
+      setTimeout(() => navigate("/"), 2000); // Replace with your redirect path
     } else {
       setError(res.msg || "Signup failed. Please try again.");
     }
@@ -67,6 +67,23 @@ export default function SignupPage() {
     console.error("Error during signup:", error);
     setError(error.message || "Something went wrong. Please try again later.");
   }
+};
+
+// Helper function to parse error responses
+const parseError = async (response) => {
+  const contentType = response.headers.get("Content-Type");
+  let errorMessage = `API Error: ${response.status}`;
+
+  if (contentType && contentType.includes("application/json")) {
+    const errorData = await response.json();
+    errorMessage += ` - ${errorData.message || JSON.stringify(errorData)}`;
+  } else {
+    const errorText = await response.text();
+    errorMessage += ` - ${errorText}`;
+  }
+
+  return errorMessage;
+}
 };
 
 
