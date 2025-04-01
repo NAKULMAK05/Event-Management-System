@@ -40,7 +40,7 @@ export default function SignupPage() {
     }
 
     try {
-      const url = `${API_BASE_URL}/api/auth/signup`;
+      const url = `${API_BASE_URL}/api/auth/register`;
       const response = await fetch(url, {
         method: "POST",
         headers: {
